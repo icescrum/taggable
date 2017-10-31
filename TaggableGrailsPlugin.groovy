@@ -22,7 +22,7 @@ import grails.util.*
  */
 class TaggableGrailsPlugin {
     def groupId = 'org.icescrum'
-    def version = "1.1.3"
+    def version = "1.1.4"
     def grailsVersion = "2.3 > *"
     def license = 'APACHE'
     def pluginExcludes = [

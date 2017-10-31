@@ -36,6 +36,9 @@ class TagLink implements Serializable {
         cache 'read-write'
         tag cache:true, fetch:'join'
 
+        type index: 'tag_links_type_index'
+        tagRef index: 'tag_links_tag_ref_index'
+
         def config = Holders.config
         if(config.grails.taggable.tagLink.table) {
             table config.grails.taggable.tagLink.table.toString()
