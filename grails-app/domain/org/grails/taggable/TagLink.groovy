@@ -28,7 +28,12 @@ class TagLink implements Serializable {
     String type
 
     static constraints = {
-        type blank:false
+        def config = Holders.config
+        if (config.grails.taggable.utf8mb4) {
+            type blank: false, maxSize: 191
+        } else {
+            type blank: false
+        }
         tagRef min:0L
     }
 

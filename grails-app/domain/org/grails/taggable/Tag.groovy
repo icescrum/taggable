@@ -45,7 +45,12 @@ class Tag implements Serializable{
     static searchable = { only = ['name'] }
 
     static constraints = {
-        name blank:false, unique:true
+        def config = Holders.config
+        if (config.grails.taggable.utf8mb4) {
+            name blank: false, unique: true, maxSize: 191
+        } else {
+            name blank: false, unique: true
+        }
     }
 
     static mapping = {
