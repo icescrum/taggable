@@ -22,7 +22,7 @@ import grails.util.*
  */
 class TaggableGrailsPlugin {
     def groupId = 'org.icescrum'
-    def version = "1.1.6"
+    def version = "1.1.7"
     def grailsVersion = "2.3 > *"
     def license = 'APACHE'
     def pluginExcludes = [
@@ -58,7 +58,10 @@ A plugin that adds a generic mechanism for tagging data.
                         if (!Tag.preserveCase) {
                             name = name.toLowerCase()
                         }
-                        tag = Tag.findByName(name, [cache:true]) ?: new Tag(name:name).save()
+                        tag = Tag.findByName(name, [cache:true])
+                        if (!tag || tag.name != name) { // For MySQL, findBy will return a result even with a different case, we want the exact same case
+                            tag = new Tag(name:name).save()
+                        }
                         if(!tag) throw new TagException("Value [$name] is not a valid tag")
                         
                         def criteria = TagLink.createCriteria()
