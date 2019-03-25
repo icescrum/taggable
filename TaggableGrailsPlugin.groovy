@@ -22,7 +22,7 @@ import grails.util.*
  */
 class TaggableGrailsPlugin {
     def groupId = 'org.icescrum'
-    def version = "1.1.8"
+    def version = "1.1.9"
     def grailsVersion = "2.3 > *"
     def license = 'APACHE'
     def pluginExcludes = [
@@ -54,14 +54,11 @@ A plugin that adds a generic mechanism for tagging data.
                 domainClass.clazz.metaClass {
                     addTag { String name ->
                         if(delegate.id == null) throw new TagException("You need to save the domain instance before tagging it")
-                        def tag
                         if (!Tag.preserveCase) {
                             name = name.toLowerCase()
                         }
-                        tag = Tag.findByName(name, [cache:true])
-                        if (!tag || tag.name != name) { // For MySQL, findBy will return a result even with a different case, we want the exact same case
-                            tag = new Tag(name:name).save()
-                        }
+                        def matchingTags = Tag.findAllByName(name, [cache:true]) // Can return several results for DBMS with case insensitive search (e.g. MySQL)
+                        def tag = matchingTags.find { it.name == name } ?: new Tag(name:name).save() // We want a new tag "Foo" even if we found "foo"
                         if(!tag) throw new TagException("Value [$name] is not a valid tag")
                         
                         def criteria = TagLink.createCriteria()
